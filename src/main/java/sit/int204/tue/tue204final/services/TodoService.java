@@ -1,5 +1,6 @@
 package sit.int204.tue.tue204final.services;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -49,5 +50,23 @@ public class TodoService {
         Sort sortObj = Sort.by(sort);
         Pageable pageable = PageRequest.of(page,size,sortObj);
         return listMapper.toPageDTO(todoRepository.findAll(pageable), ReturnTodoPageDto.class, modelMapper);
+    }
+
+    public void deleteTodo(Integer id) {
+         if(todoRepository.existsById(id)){
+             todoRepository.deleteById(id);
+         }else{
+             throw new TodoNotFoundException("cannot delete");
+         }
+    }
+
+    @Transactional
+    public void deleteAllTodoByOwner(String owner) {
+        if(todoRepository.existsTodoByOwner(owner)){
+            todoRepository.deleteAllByOwner(owner);
+            todoRepository.saveAllAndFlush(todoRepository.findAll());
+        }else{
+            throw new TodoNotFoundException("cannot delete + " + owner);
+        }
     }
 }
