@@ -1,2 +1,11 @@
-package sit.int204.tue.tue204final.exceptions;public class TodoNotFoundException {
+package sit.int204.tue.tue204final.exceptions;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class TodoNotFoundException extends RuntimeException{
+    public TodoNotFoundException(String message) {
+        super(message + " is ok");
+    }
 }
